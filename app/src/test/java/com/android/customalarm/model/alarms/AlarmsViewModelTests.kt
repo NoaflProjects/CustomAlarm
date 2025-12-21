@@ -13,37 +13,36 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class AlarmsViewModelTests {
 
-    @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
+  @get:Rule val mainDispatcherRule = MainDispatcherRule()
 
-    private lateinit var repository: AlarmsRepositoryInMemory
-    private lateinit var viewModel: AlarmsViewModel
+  private lateinit var repository: AlarmsRepositoryInMemory
+  private lateinit var viewModel: AlarmsViewModel
 
-    @Before
-    fun setup() {
-        repository = AlarmsRepositoryInMemory()
-        viewModel = AlarmsViewModel(repository)
-    }
+  @Before
+  fun setup() {
+    repository = AlarmsRepositoryInMemory()
+    viewModel = AlarmsViewModel(repository)
+  }
 
-    @Test
-    fun addAlarm_addsAlarmToState() = runTest {
-        val alarm = Alarm(id = "1", time = "07:00")
+  @Test
+  fun addAlarm_addsAlarmToState() = runTest {
+    val alarm = Alarm(id = "1", time = "07:00")
 
-        viewModel.addAlarm(alarm)
+    viewModel.addAlarm(alarm)
 
-        val alarms = viewModel.alarms.first()
-        assertEquals(1, alarms.size)
-        assertEquals(alarm, alarms.first())
-    }
+    val alarms = viewModel.alarms.first()
+    assertEquals(1, alarms.size)
+    assertEquals(alarm, alarms.first())
+  }
 
-    @Test
-    fun toggleAlarm_updatesEnabledState() = runTest {
-        val alarm = Alarm(id = "1", time = "07:00", isEnabled = false)
-        repository.addAlarm(alarm)
+  @Test
+  fun toggleAlarm_updatesEnabledState() = runTest {
+    val alarm = Alarm(id = "1", time = "07:00", isEnabled = false)
+    repository.addAlarm(alarm)
 
-        viewModel.toggleAlarm("1", true)
+    viewModel.toggleAlarm("1", true)
 
-        val updatedAlarm = viewModel.alarms.first().first()
-        assertTrue(updatedAlarm.isEnabled)
-    }
+    val updatedAlarm = viewModel.alarms.first().first()
+    assertTrue(updatedAlarm.isEnabled)
+  }
 }
