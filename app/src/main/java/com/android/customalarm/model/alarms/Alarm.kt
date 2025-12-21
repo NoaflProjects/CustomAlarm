@@ -1,4 +1,4 @@
-package com.example.customalarm.model.alarms
+package com.android.customalarm.model.alarms
 
 import java.util.UUID
 
@@ -8,7 +8,7 @@ import java.util.UUID
  * @param id Unique identifier for the alarm
  * @param time Time of the alarm in HH:MM format
  * @param isEnabled Boolean indicating if the alarm is enabled
- * */
+ */
 data class Alarm(
     val id: String = UUID.randomUUID().toString(),
     val time: String = "07:00",
