@@ -1,0 +1,111 @@
+name: CI - Test Runner
+
+# Trigger the workflow on push or pull request events to the main branch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      # Checkout repository
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0 # required for Sonar analysis later if needed
+
+      # Enable KVM for emulator acceleration
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      # Setup Java
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+
+      # Setup Gradle
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v3
+
+      # Cache Android Emulator
+      - name: AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-34
+
+      # Create AVD if cache miss
+      - name: Create Android Emulator
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          force-avd-creation: true
+          emulator-options: >
+            -no-window
+            -gpu swiftshader_indirect
+            -noaudio
+            -no-boot-anim
+            -camera-back none
+          disable-animations: true
+          script: echo "AVD created and cached."
+
+      # Grant execute permission for gradlew
+      - name: Grant execute permission
+        run: chmod +x ./gradlew
+
+      # KTFmt check
+      - name: KTFmt Check
+        run: ./gradlew ktfmtCheck --parallel --build-cache
+
+      # Build + Lint
+      - name: Assemble and Lint
+        run: ./gradlew assemble lint --parallel --build-cache
+
+      # Run Unit Tests
+      - name: Run Unit Tests
+        run: ./gradlew check --parallel --build-cache
+
+      # Run UI Tests on Emulator
+      - name: Run UI Tests on Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          force-avd-creation: false
+          profile: pixel_7
+          emulator-boot-timeout: 120000
+          emulator-options: >
+            -no-snapshot
+            -no-window
+            -gpu swiftshader_indirect
+            -no-audio
+            -no-boot-anim
+            -camera-back none
+            -camera-front none
+            -idle-grpc-timeout 300
+          disable-animations: true
+          script: ./gradlew connectedCheck --parallel --build-cache

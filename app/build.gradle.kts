@@ -2,14 +2,15 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ktfmt)
 }
 
 android {
-    namespace = "com.example.customalarm"
+    namespace = "com.android.customalarm"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.customalarm"
+        applicationId = "com.android.customalarm"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -28,11 +29,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -56,4 +57,8 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    // Coroutines
+    testImplementation(libs.kotlinx.coroutines.test)
 }
