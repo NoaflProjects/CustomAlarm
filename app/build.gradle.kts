@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ktfmt)
     alias(libs.plugins.sonar)
+    id("jacoco")
 }
 
 android {
@@ -28,7 +29,17 @@ android {
                 "proguard-rules.pro"
             )
         }
+
+        debug {
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
+        }
     }
+
+    testCoverage {
+        jacocoVersion = "0.8.8"
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -38,6 +49,20 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+}
+
+
+// ---------------- SonarCloud ----------------
+sonar {
+    properties {
+        property("sonar.projectKey", "NoaflProjects_CustomAlarm")
+        property("sonar.organization", "noaflprojects")
+        property("sonar.host.url", "https://sonarcloud.io")
+        property(
+            "sonar.coverage.jacoco.xmlReportPaths",
+            layout.buildDirectory.get().asFile.resolve("reports/jacoco/jacocoTestReport/jacocoTestReport.xml").absolutePath
+        )
     }
 }
 
@@ -62,4 +87,38 @@ dependencies {
 
     // Coroutines
     testImplementation(libs.kotlinx.coroutines.test)
+}
+
+// ---------------- Jacoco ----------------
+tasks.register<JacocoReport>("jacocoTestReport") {
+    mustRunAfter("testDebugUnitTest", "connectedDebugAndroidTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    val fileFilter = listOf(
+        "**/R.class",
+        "**/R$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*",
+        "android/**/*.*"
+    )
+
+    val debugTree = fileTree(layout.buildDirectory.get().asFile.resolve("tmp/kotlin-classes/debug")) {
+        exclude(fileFilter)
+    }
+
+    val mainSrc = layout.projectDirectory.dir("src/main/java").asFile
+
+    sourceDirectories.setFrom(files(mainSrc))
+    classDirectories.setFrom(files(debugTree))
+    executionData.setFrom(
+        fileTree(layout.buildDirectory.get().asFile) {
+            include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
+            include("outputs/code_coverage/debugAndroidTest/connected/*/coverage.ec")
+        }
+    )
 }
