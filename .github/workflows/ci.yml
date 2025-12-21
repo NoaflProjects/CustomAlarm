@@ -72,6 +72,11 @@ jobs:
           disable-animations: true
           script: echo "AVD created and cached."
 
+      - name: Decode secrets
+        env:
+          LOCAL_PROPERTIES: ${{ secrets.LOCAL_PROPERTIES }}
+        run: echo "$LOCAL_PROPERTIES" | base64 --decode > ./local.properties
+
       # Grant execute permission for gradlew
       - name: Grant execute permission
         run: chmod +x ./gradlew
@@ -109,3 +114,16 @@ jobs:
             -idle-grpc-timeout 300
           disable-animations: true
           script: ./gradlew connectedCheck --parallel --build-cache
+
+      # This step generates the coverage report which will be uploaded to sonar
+      - name: Generate Coverage Report
+        run: |
+          ./gradlew jacocoTestReport
+
+      # Upload the various reports to sonar
+      - name: Upload report to SonarCloud
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew sonar --parallel --build-cache
+
