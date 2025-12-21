@@ -11,6 +11,9 @@ object Dimens {
   val paddingMedium = 16.dp
   val paddingLarge = 24.dp
 
+  /** Spacing value */
+  val spacingSmall = 8.dp
+
   /** Font size values */
   val fontSizeSmall = 12.sp
   val fontSizeMedium = 16.sp
