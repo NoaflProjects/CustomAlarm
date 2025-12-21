@@ -99,6 +99,10 @@ dependencies {
 
 // ---------------- Jacoco ----------------
 tasks.register<JacocoReport>("jacocoTestReport") {
+
+    group = "verification" // Place the task under the "verification" group
+    description = "Generates Jacoco code coverage report for unit and instrumented tests."
+
     mustRunAfter("testDebugUnitTest", "connectedDebugAndroidTest")
 
     reports {
