@@ -27,8 +27,6 @@ fun AlarmCard(
     onToggle: (Boolean) -> Unit = {},
     onClick: () -> Unit = {}
 ) {
-  var checked by remember { mutableStateOf(isEnabled) }
-
   Card(modifier = Modifier.fillMaxWidth().padding(all = paddingSmall).clickable { onClick() }) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(all = paddingMedium),
@@ -38,12 +36,7 @@ fun AlarmCard(
           Text(text = time, fontSize = fontSizeExtraLarge)
 
           // Enable/disable switch
-          Switch(
-              checked = checked,
-              onCheckedChange = {
-                checked = it
-                onToggle(it)
-              })
+          Switch(checked = isEnabled, onCheckedChange = onToggle)
         }
   }
 }
