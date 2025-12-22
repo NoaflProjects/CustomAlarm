@@ -37,12 +37,14 @@ object AlarmSetUpScreenTags {
  * @param alarmSetUpViewModel ViewModel managing the state and logic for the Alarm Setup screen.
  * @param onNavigateBack Lambda function to be called when the back button is clicked.
  * @param onSaveAlarm Lambda function to be called when the save button is clicked.
+ * @param snapToCenter Boolean indicating whether the time picker should snap to center.
  */
 @Composable
 fun AlarmSetUpScreen(
     alarmSetUpViewModel: AlarmSetUpViewModel = viewModel(),
     onNavigateBack: () -> Unit = {},
-    onSaveAlarm: () -> Unit = {}
+    onSaveAlarm: () -> Unit = {},
+    snapToCenter: Boolean = true
 ) {
 
   // State for the selected time
@@ -75,7 +77,8 @@ fun AlarmSetUpScreen(
                   initialMinute = uiState.value.selectedMinute,
                   hourSelectorTestTag = AlarmSetUpScreenTags.HOUR_PICKER,
                   minuteSelectorTestTag = AlarmSetUpScreenTags.MINUTE_PICKER,
-                  onTimeChanged = alarmSetUpViewModel::onTimeChanged)
+                  onTimeChanged = alarmSetUpViewModel::onTimeChanged,
+                  snapToCenter = snapToCenter)
 
               // Alarm name input
               OutlinedTextField(
