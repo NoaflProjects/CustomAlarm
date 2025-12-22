@@ -119,16 +119,20 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "android/**/*.*"
     )
 
-    val debugTree = fileTree(layout.buildDirectory.get().asFile.resolve("tmp/kotlin-classes/debug")) {
+    val debugTree = fileTree(
+        layout.buildDirectory.dir("tmp/kotlin-classes/debug")
+    ) {
         exclude(fileFilter)
     }
 
-    val mainSrc = layout.projectDirectory.dir("src/main/java").asFile
+    sourceDirectories.setFrom(
+        android.sourceSets["main"].java.srcDirs
+    )
 
-    sourceDirectories.setFrom(files(mainSrc))
-    classDirectories.setFrom(files(debugTree))
+    classDirectories.setFrom(debugTree)
+
     executionData.setFrom(
-        fileTree(layout.buildDirectory.get().asFile) {
+        fileTree(layout.buildDirectory) {
             include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
             include("outputs/code_coverage/debugAndroidTest/connected/*/coverage.ec")
         }
