@@ -11,9 +11,9 @@ import com.android.customalarm.R
 import com.android.customalarm.model.alarms.Alarm
 import com.android.customalarm.model.alarms.AlarmsRepository
 import com.android.customalarm.model.alarms.AlarmsRepositoryInMemory
-import com.android.customalarm.model.alarms.AlarmsViewModel
 import com.android.customalarm.ui.alarms.AlarmsScreen
 import com.android.customalarm.ui.alarms.AlarmsScreenTestTags
+import com.android.customalarm.ui.alarms.AlarmsViewModel
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

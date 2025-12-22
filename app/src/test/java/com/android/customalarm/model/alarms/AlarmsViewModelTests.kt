@@ -1,6 +1,7 @@
 package com.android.customalarm.model.alarms
 
 import com.android.customalarm.MainDispatcherRule
+import com.android.customalarm.ui.alarms.AlarmsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest

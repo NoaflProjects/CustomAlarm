@@ -22,7 +22,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.customalarm.R
-import com.android.customalarm.model.alarms.AlarmsViewModel
 import com.android.customalarm.ui.theme.Dimens.paddingMedium
 import com.android.customalarm.ui.theme.Dimens.spacingSmall
 
