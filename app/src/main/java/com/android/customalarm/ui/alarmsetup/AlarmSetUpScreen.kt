@@ -9,16 +9,12 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.customalarm.R
 import com.android.customalarm.ui.common.TopBar
 import com.android.customalarm.ui.theme.Dimens.paddingMedium
@@ -38,61 +34,60 @@ object AlarmSetUpScreenTags {
 /**
  * Composable function for the Alarm Setup Screen.
  *
+ * @param alarmSetUpViewModel ViewModel managing the state and logic for the Alarm Setup screen.
  * @param onNavigateBack Lambda function to be called when the back button is clicked.
  * @param onSaveAlarm Lambda function to be called when the save button is clicked.
  */
 @Composable
-fun AlarmSetUpScreen(onNavigateBack: () -> Unit = {}, onSaveAlarm: () -> Unit = {}) {
+fun AlarmSetUpScreen(
+    alarmSetUpViewModel: AlarmSetUpViewModel = viewModel(),
+    onNavigateBack: () -> Unit = {},
+    onSaveAlarm: () -> Unit = {}
+) {
 
   // State for the selected time
-  var hour by remember { mutableIntStateOf(12) }
-  var minute by remember { mutableIntStateOf(0) }
-  var alarmName by remember { mutableStateOf("") }
+  val uiState = alarmSetUpViewModel.uiState.collectAsState()
 
   Scaffold(
-      modifier = Modifier.testTag(AlarmSetUpScreenTags.ROOT),
+      modifier = Modifier.testTag(tag = AlarmSetUpScreenTags.ROOT),
       topBar = {
         TopBar(
-            leftText = stringResource(R.string.back),
+            leftText = stringResource(id = R.string.back),
             onLeftClick = onNavigateBack,
-            middleText = stringResource(R.string.alarm_setup_title),
-            rightText = stringResource(R.string.save),
-            onRightClick = onSaveAlarm,
+            middleText = stringResource(id = R.string.alarm_setup_title),
+            rightText = stringResource(id = R.string.save),
+            onRightClick = {
+              alarmSetUpViewModel.saveAlarm()
+              onSaveAlarm()
+            },
             leftTestTag = AlarmSetUpScreenTags.LEFT_TOPBAR_BUTTON,
             middleTestTag = AlarmSetUpScreenTags.MIDDLE_TOPBAR_TEXT,
             rightTestTag = AlarmSetUpScreenTags.RIGHT_TOPBAR_BUTTON)
       }) { innerPadding ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(innerPadding),
+            modifier = Modifier.fillMaxSize().padding(paddingValues = innerPadding),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally) {
               // Time picker
               TimePicker(
-                  modifier = Modifier.testTag(AlarmSetUpScreenTags.TIME_PICKER),
-                  initialHour = hour,
-                  initialMinute = minute,
+                  modifier = Modifier.testTag(tag = AlarmSetUpScreenTags.TIME_PICKER),
+                  initialHour = uiState.value.selectedHour,
+                  initialMinute = uiState.value.selectedMinute,
                   hourSelectorTestTag = AlarmSetUpScreenTags.HOUR_PICKER,
                   minuteSelectorTestTag = AlarmSetUpScreenTags.MINUTE_PICKER,
-                  onTimeChanged = { h, m ->
-                    hour = h
-                    minute = m
-                  })
+                  onTimeChanged = alarmSetUpViewModel::onTimeChanged)
 
               // Alarm name input
               OutlinedTextField(
-                  value = alarmName,
-                  onValueChange = { alarmName = it },
-                  placeholder = { Text(text = stringResource(R.string.alarm_name_placeholder)) },
+                  value = uiState.value.alarmName,
+                  onValueChange = alarmSetUpViewModel::onAlarmNameChanged,
+                  placeholder = {
+                    Text(text = stringResource(id = R.string.alarm_name_placeholder))
+                  },
                   modifier =
                       Modifier.fillMaxWidth()
-                          .padding(paddingMedium)
-                          .testTag(AlarmSetUpScreenTags.ALARM_NAME_FIELD))
+                          .padding(all = paddingMedium)
+                          .testTag(tag = AlarmSetUpScreenTags.ALARM_NAME_FIELD))
             }
       }
-}
-
-@Preview
-@Composable
-fun AlarmSetUpScreenPreview() {
-  AlarmSetUpScreen()
 }
