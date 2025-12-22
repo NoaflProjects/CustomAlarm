@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.android.customalarm.ui.theme.Dimens.CircularPickerWidth
@@ -29,13 +30,19 @@ import kotlinx.coroutines.launch
  * @param initialMinute Initial minute to be selected (0-59).
  * @param onTimeChanged Lambda function called when the time is changed, providing the selected hour
  *   and minute.
+ * @param snapToCenter Whether to snap the selected item to the center when scrolling stops.
+ * @param hourSelectorTestTag Test tag for the hour selector, useful for UI testing.
+ * @param minuteSelectorTestTag Test tag for the minute selector, useful for UI testing.
  */
 @Composable
 fun TimePicker(
     modifier: Modifier = Modifier,
     initialHour: Int = 12,
     initialMinute: Int = 0,
-    onTimeChanged: (hour: Int, minute: Int) -> Unit = { _, _ -> }
+    onTimeChanged: (hour: Int, minute: Int) -> Unit = { _, _ -> },
+    snapToCenter: Boolean = true,
+    hourSelectorTestTag: String = "",
+    minuteSelectorTestTag: String = ""
 ) {
   // State for selected hour and minute
   var selectedHour by remember { mutableIntStateOf(initialHour) }
@@ -45,6 +52,9 @@ fun TimePicker(
   val hourState = rememberLazyListState(initialFirstVisibleItemIndex = initialHour + 1000 * 24 / 2)
   val minuteState =
       rememberLazyListState(initialFirstVisibleItemIndex = initialMinute + 1000 * 60 / 2)
+
+  // Notify initial time
+  onTimeChanged(initialHour, initialMinute)
 
   Row(
       modifier = modifier.fillMaxWidth(),
@@ -58,7 +68,9 @@ fun TimePicker(
             onSelectedChange = {
               selectedHour = it
               onTimeChanged(selectedHour, selectedMinute)
-            })
+            },
+            snapToCenter = snapToCenter,
+            modifier = Modifier.testTag(hourSelectorTestTag))
 
         Spacer(modifier = Modifier.width(spacingMedium))
 
@@ -69,7 +81,9 @@ fun TimePicker(
             onSelectedChange = {
               selectedMinute = it
               onTimeChanged(selectedHour, selectedMinute)
-            })
+            },
+            snapToCenter = snapToCenter,
+            modifier = Modifier.testTag(minuteSelectorTestTag))
       }
 }
 
@@ -80,6 +94,7 @@ fun TimePicker(
  * @param state The LazyListState to control the scroll position.
  * @param modifier Modifier to be applied to the CircularPicker.
  * @param onSelectedChange Lambda function called when the selected value changes.
+ * @param snapToCenter Whether to snap the selected item to the center when scrolling stops.
  */
 @SuppressLint("FrequentlyChangingValue")
 @Composable
@@ -87,7 +102,8 @@ fun CircularPicker(
     range: IntRange,
     state: androidx.compose.foundation.lazy.LazyListState,
     modifier: Modifier = Modifier,
-    onSelectedChange: (Int) -> Unit
+    onSelectedChange: (Int) -> Unit,
+    snapToCenter: Boolean = true
 ) {
   // Number of visible items
   val visibleCount = 3
@@ -139,17 +155,22 @@ fun CircularPicker(
         }
   }
 
+  // To prevent multiple snapping animations at the same time
+  val isSnapping = remember { mutableStateOf(false) }
+
   // Listen to scroll state changes to detect when scrolling stops
   LaunchedEffect(state.isScrollInProgress) {
     snapshotFlow { state.isScrollInProgress }
         .collect { scrolling ->
           // When scrolling stops, snap to the nearest item
-          if (!scrolling) {
+          if (snapToCenter && !scrolling && !isSnapping.value) {
+            isSnapping.value = true
             val offsetIndex = state.firstVisibleItemScrollOffset / itemHeightPx
             val centerIndex = state.firstVisibleItemIndex + offsetIndex.roundToInt()
             coroutineScope.launch {
               state.animateScrollToItem(centerIndex)
               onSelectedChange(range.first + (centerIndex % range.count()))
+              isSnapping.value = false
             }
           }
         }
