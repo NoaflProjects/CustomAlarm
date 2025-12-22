@@ -12,4 +12,5 @@
 
     <!-- Alarm setup screen -->
     <string name="alarm_setup_title">Set Alarm</string>
+    <string name="alarm_name_placeholder">Alarm Name</string>
 </resources>
