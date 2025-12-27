@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import com.android.customalarm.ui.theme.Dimens.paddingMassive
 import com.android.customalarm.ui.theme.Dimens.paddingMedium
 
 /**
@@ -35,37 +36,47 @@ fun TopBar(
     middleTestTag: String = "",
     rightTestTag: String = ""
 ) {
-  Box(modifier = Modifier.fillMaxWidth().padding(all = paddingMedium)) {
-    if (leftText.isNotEmpty()) {
-      Text(
-          text = leftText,
-          style = MaterialTheme.typography.bodySmall,
-          modifier =
-              Modifier.align(Alignment.CenterStart)
-                  .clickable(onClick = onLeftClick)
-                  .then(if (leftTestTag.isNotEmpty()) Modifier.testTag(leftTestTag) else Modifier))
-    }
+  Box(
+      modifier =
+          Modifier.fillMaxWidth()
+              .padding(
+                  start = paddingMedium,
+                  end = paddingMedium,
+                  top = paddingMassive,
+                  bottom = paddingMedium)) {
+        if (leftText.isNotEmpty()) {
+          Text(
+              text = leftText,
+              style = MaterialTheme.typography.bodySmall,
+              modifier =
+                  Modifier.align(Alignment.CenterStart)
+                      .clickable(onClick = onLeftClick)
+                      .then(
+                          if (leftTestTag.isNotEmpty()) Modifier.testTag(leftTestTag)
+                          else Modifier))
+        }
 
-    if (middleText.isNotEmpty()) {
-      Text(
-          text = middleText,
-          style = MaterialTheme.typography.titleLarge,
-          modifier =
-              Modifier.align(Alignment.Center)
-                  .then(
-                      if (middleTestTag.isNotEmpty()) Modifier.testTag(middleTestTag)
-                      else Modifier))
-    }
+        if (middleText.isNotEmpty()) {
+          Text(
+              text = middleText,
+              style = MaterialTheme.typography.titleLarge,
+              modifier =
+                  Modifier.align(Alignment.Center)
+                      .then(
+                          if (middleTestTag.isNotEmpty()) Modifier.testTag(middleTestTag)
+                          else Modifier))
+        }
 
-    if (rightText.isNotEmpty()) {
-      Text(
-          text = rightText,
-          style = MaterialTheme.typography.bodySmall,
-          modifier =
-              Modifier.align(Alignment.CenterEnd)
-                  .clickable(onClick = onRightClick)
-                  .then(
-                      if (rightTestTag.isNotEmpty()) Modifier.testTag(rightTestTag) else Modifier))
-    }
-  }
+        if (rightText.isNotEmpty()) {
+          Text(
+              text = rightText,
+              style = MaterialTheme.typography.bodySmall,
+              modifier =
+                  Modifier.align(Alignment.CenterEnd)
+                      .clickable(onClick = onRightClick)
+                      .then(
+                          if (rightTestTag.isNotEmpty()) Modifier.testTag(rightTestTag)
+                          else Modifier))
+        }
+      }
 }
