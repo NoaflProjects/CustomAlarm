@@ -24,7 +24,7 @@ fun CustomAlarmNavHost() {
     composable(Routes.ALARM_SETUP) {
       AlarmSetUpScreen(
           onNavigateBack = { navController.popBackStack() },
-          onSaveAlarm = { navController.navigate(Routes.ALARMS) })
+          onSaveAlarm = { navController.popBackStack() })
     }
 
     composable(
@@ -35,7 +35,7 @@ fun CustomAlarmNavHost() {
           AlarmSetUpScreen(
               alarmId = alarmId,
               onNavigateBack = { navController.popBackStack() },
-              onSaveAlarm = { navController.navigate(Routes.ALARMS) })
+              onSaveAlarm = { navController.popBackStack() })
         }
   }
 }
