@@ -29,6 +29,9 @@ class AlarmSetUpVMTests {
 
   @Test
   fun `initial state is current time`() = runTest {
+    // Create a new alarm to initialize the state
+    viewModel.createNewAlarm()
+
     val state = viewModel.uiState.first()
 
     val now = java.util.Calendar.getInstance()
