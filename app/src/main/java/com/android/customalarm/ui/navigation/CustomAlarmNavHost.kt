@@ -18,7 +18,7 @@ fun CustomAlarmNavHost(startDestination: String = Routes.ALARMS) {
     composable(Routes.ALARMS) {
       AlarmsScreen(
           onAddAlarm = { navController.navigate(Routes.ALARM_SETUP) },
-          onClickAlarm = { alarmId -> navController.navigate(Routes.alarmSetupWithId(alarmId)) })
+          onClickAlarm = { alarmId -> navController.navigate(Routes.alarmSetup(alarmId)) })
     }
 
     composable(Routes.ALARM_SETUP) {

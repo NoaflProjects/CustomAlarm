@@ -8,5 +8,5 @@ object Routes {
   const val ALARM_SETUP = "alarm_setup"
 
   // Route for editing an existing alarm with a specific ID
-  fun alarmSetupWithId(alarmId: String) = "alarmSetup/$alarmId"
+  fun alarmSetup(alarmId: String) = "alarmSetup/$alarmId"
 }
