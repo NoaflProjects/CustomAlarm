@@ -11,10 +11,10 @@ import com.android.customalarm.ui.alarmsetup.AlarmSetUpScreen
 
 /** Navigation host for the Custom Alarm application. */
 @Composable
-fun CustomAlarmNavHost() {
+fun CustomAlarmNavHost(startDestination: String = Routes.ALARMS) {
   val navController = rememberNavController()
 
-  NavHost(navController = navController, startDestination = Routes.ALARMS) {
+  NavHost(navController = navController, startDestination = startDestination) {
     composable(Routes.ALARMS) {
       AlarmsScreen(
           onAddAlarm = { navController.navigate(Routes.ALARM_SETUP) },
