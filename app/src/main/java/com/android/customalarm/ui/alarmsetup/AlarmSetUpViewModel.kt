@@ -1,11 +1,11 @@
 package com.android.customalarm.ui.alarmsetup
 
-import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.customalarm.model.alarms.Alarm
 import com.android.customalarm.model.alarms.AlarmsRepository
 import com.android.customalarm.model.alarms.AlarmsRepositoryProvider
+import java.util.Locale
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -89,12 +89,11 @@ class AlarmSetUpViewModel(
   }
 
   // Save the alarm (add new or modify existing) in the repository
-  @SuppressLint("DefaultLocale")
   fun saveAlarm() {
     viewModelScope.launch {
       val state = _uiState.value
-      val time = String.format("%02d:%02d", state.selectedHour, state.selectedMinute)
-
+      // Format time as "HH:MM"
+      val time = String.format(Locale.US, "%02d:%02d", state.selectedHour, state.selectedMinute)
       val currentAlarm = alarmsRepository.getAlarmById(state.alarmId).firstOrNull()
 
       // If the alarm exists, modify it; otherwise, add a new alarm
