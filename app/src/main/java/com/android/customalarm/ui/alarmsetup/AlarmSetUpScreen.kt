@@ -59,64 +59,70 @@ fun AlarmSetUpScreen(
   // State for the selected time
   val uiState = alarmSetUpViewModel.uiState.collectAsState()
 
+  // State to track if the alarm data is loaded
+  val isLoaded = alarmSetUpViewModel.isLoaded.collectAsState()
+
   // Load the alarm if an alarmId is provided
   LaunchedEffect(alarmId) { alarmId?.let { alarmSetUpViewModel.setAlarmId(alarmId = it) } }
 
-  Scaffold(
-      modifier = Modifier.testTag(tag = AlarmSetUpScreenTags.ROOT),
-      topBar = {
-        TopBar(
-            leftText = stringResource(id = R.string.back),
-            onLeftClick = onNavigateBack,
-            middleText = stringResource(id = R.string.alarm_setup_title),
-            rightText = stringResource(id = R.string.save),
-            onRightClick = {
-              alarmSetUpViewModel.saveAlarm()
-              onSaveAlarm()
-            },
-            leftTestTag = AlarmSetUpScreenTags.LEFT_TOPBAR_BUTTON,
-            middleTestTag = AlarmSetUpScreenTags.MIDDLE_TOPBAR_TEXT,
-            rightTestTag = AlarmSetUpScreenTags.RIGHT_TOPBAR_BUTTON)
-      }) { innerPadding ->
-        Column(
-            modifier = Modifier.fillMaxSize().padding(paddingValues = innerPadding),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally) {
-              // Time picker
-              TimePicker(
-                  modifier = Modifier.testTag(tag = AlarmSetUpScreenTags.TIME_PICKER),
-                  selectedHour = uiState.value.selectedHour,
-                  selectedMinute = uiState.value.selectedMinute,
-                  onTimeChanged = { hour, minute ->
-                    alarmSetUpViewModel.onTimeChanged(hour, minute)
-                  },
-                  hourSelectorTestTag = AlarmSetUpScreenTags.HOUR_PICKER,
-                  minuteSelectorTestTag = AlarmSetUpScreenTags.MINUTE_PICKER)
+  if (alarmId == null || isLoaded.value) {
 
-              Spacer(Modifier.height(height = spacingVerySmall))
+    Scaffold(
+        modifier = Modifier.testTag(tag = AlarmSetUpScreenTags.ROOT),
+        topBar = {
+          TopBar(
+              leftText = stringResource(id = R.string.back),
+              onLeftClick = onNavigateBack,
+              middleText = stringResource(id = R.string.alarm_setup_title),
+              rightText = stringResource(id = R.string.save),
+              onRightClick = {
+                alarmSetUpViewModel.saveAlarm()
+                onSaveAlarm()
+              },
+              leftTestTag = AlarmSetUpScreenTags.LEFT_TOPBAR_BUTTON,
+              middleTestTag = AlarmSetUpScreenTags.MIDDLE_TOPBAR_TEXT,
+              rightTestTag = AlarmSetUpScreenTags.RIGHT_TOPBAR_BUTTON)
+        }) { innerPadding ->
+          Column(
+              modifier = Modifier.fillMaxSize().padding(paddingValues = innerPadding),
+              verticalArrangement = Arrangement.Center,
+              horizontalAlignment = Alignment.CenterHorizontally) {
+                // Time picker
+                TimePicker(
+                    modifier = Modifier.testTag(tag = AlarmSetUpScreenTags.TIME_PICKER),
+                    selectedHour = uiState.value.selectedHour,
+                    selectedMinute = uiState.value.selectedMinute,
+                    onTimeChanged = { hour, minute ->
+                      alarmSetUpViewModel.onTimeChanged(hour, minute)
+                    },
+                    hourSelectorTestTag = AlarmSetUpScreenTags.HOUR_PICKER,
+                    minuteSelectorTestTag = AlarmSetUpScreenTags.MINUTE_PICKER)
 
-              // Display the selected time
-              Text(
-                  text =
-                      "The alarm is set for %02d:%02d"
-                          .format(uiState.value.selectedHour, uiState.value.selectedMinute),
-                  fontSize = fontSizeSmall,
-                  fontWeight = FontWeight.Normal,
-                  modifier = Modifier.testTag(tag = AlarmSetUpScreenTags.SELECTED_TIME_TEXT))
+                Spacer(Modifier.height(height = spacingVerySmall))
 
-              Spacer(Modifier.height(height = spacingVerySmall))
+                // Display the selected time
+                Text(
+                    text =
+                        "The alarm is set for %02d:%02d"
+                            .format(uiState.value.selectedHour, uiState.value.selectedMinute),
+                    fontSize = fontSizeSmall,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier.testTag(tag = AlarmSetUpScreenTags.SELECTED_TIME_TEXT))
 
-              // Alarm name input
-              OutlinedTextField(
-                  value = uiState.value.alarmName,
-                  onValueChange = alarmSetUpViewModel::onAlarmNameChanged,
-                  placeholder = {
-                    Text(text = stringResource(id = R.string.alarm_name_placeholder))
-                  },
-                  modifier =
-                      Modifier.fillMaxWidth()
-                          .padding(all = paddingMedium)
-                          .testTag(tag = AlarmSetUpScreenTags.ALARM_NAME_FIELD))
-            }
-      }
+                Spacer(Modifier.height(height = spacingVerySmall))
+
+                // Alarm name input
+                OutlinedTextField(
+                    value = uiState.value.alarmName,
+                    onValueChange = alarmSetUpViewModel::onAlarmNameChanged,
+                    placeholder = {
+                      Text(text = stringResource(id = R.string.alarm_name_placeholder))
+                    },
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .padding(all = paddingMedium)
+                            .testTag(tag = AlarmSetUpScreenTags.ALARM_NAME_FIELD))
+              }
+        }
+  }
 }

@@ -45,6 +45,9 @@ class AlarmSetUpViewModel(
   private val _uiState = MutableStateFlow(value = AlarmSetUpUiState())
   val uiState: StateFlow<AlarmSetUpUiState> = _uiState
 
+  private val _isLoaded = MutableStateFlow(false)
+  val isLoaded: StateFlow<Boolean> = _isLoaded
+
   init {
     if (_uiState.value.alarmId.isEmpty()) {
       val now = java.util.Calendar.getInstance()
@@ -68,6 +71,7 @@ class AlarmSetUpViewModel(
             _uiState.value.copy(
                 selectedHour = hour, selectedMinute = minute, alarmName = existingAlarm.name)
       }
+      _isLoaded.value = true
     }
   }
 
