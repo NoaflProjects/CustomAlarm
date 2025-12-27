@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,13 +36,17 @@ private const val REPEAT_FACTOR = 20
  * @param selectedHour The currently selected hour (0-23).
  * @param selectedMinute The currently selected minute (0-59).
  * @param onTimeChanged Callback invoked when the selected time changes.
+ * @param hourSelectorTestTag Test tag for the hour selector (for testing purposes).
+ * @param minuteSelectorTestTag Test tag for the minute selector (for testing purposes).
  */
 @Composable
 fun TimePicker(
     modifier: Modifier = Modifier,
     selectedHour: Int,
     selectedMinute: Int,
-    onTimeChanged: (hour: Int, minute: Int) -> Unit
+    onTimeChanged: (hour: Int, minute: Int) -> Unit,
+    hourSelectorTestTag: String = "",
+    minuteSelectorTestTag: String = ""
 ) {
   val visibleItems = 3 // Number of items visible at once
 
@@ -107,7 +112,8 @@ fun TimePicker(
           Box(
               modifier =
                   Modifier.width(circularPickerWidth)
-                      .height(height = (ITEM_HEIGHT * visibleItems).dp)) {
+                      .height(height = (ITEM_HEIGHT * visibleItems).dp)
+                      .testTag(hourSelectorTestTag)) {
                 LazyColumn(
                     state = hourState,
                     flingBehavior = hourSnap,
@@ -138,7 +144,8 @@ fun TimePicker(
           Box(
               modifier =
                   Modifier.width(width = circularPickerWidth)
-                      .height(height = (ITEM_HEIGHT * visibleItems).dp)) {
+                      .height(height = (ITEM_HEIGHT * visibleItems).dp)
+                      .testTag(minuteSelectorTestTag)) {
                 LazyColumn(
                     state = minuteState,
                     flingBehavior = minuteSnap,
