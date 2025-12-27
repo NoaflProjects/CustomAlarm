@@ -1,8 +1,17 @@
 <resources>
     <string name="app_name">Custom Alarm</string>
 
+    <!-- Common strings -->
+    <string name="back">Back</string>
+    <string name="save">Save</string>
+
     <!-- Alarms screen -->
     <string name="alarms_title">Alarms</string>
     <string name="add_alarm">Add Alarm</string>
     <string name="no_alarms_message">No alarms set. Tap the + button to add a new alarm.</string>
+
+    <!-- Alarm setup screen -->
+    <string name="alarm_setup_title">Set Alarm</string>
+    <string name="alarm_name_placeholder">Alarm Name</string>
+    <string name="alarm_set_for_time">The alarm is set for %1$d:%2$02d</string>
 </resources>

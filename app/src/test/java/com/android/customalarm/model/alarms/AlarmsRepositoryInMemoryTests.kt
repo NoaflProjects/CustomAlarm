@@ -81,4 +81,28 @@ class AlarmsRepositoryInMemoryTests {
       assertTrue(e.message!!.contains("does not exist"))
     }
   }
+
+  @Test
+  fun getAlarmById_returnsCorrectAlarm() = runBlocking {
+    val alarmFlow = repository.getAlarmById("1")
+    val alarm = alarmFlow.first()
+    assertNotNull(alarm)
+    assertEquals("1", alarm?.id)
+    assertEquals("07:00", alarm?.time)
+  }
+
+  @Test
+  fun getAlarmById_returnsNullForNonExistentAlarm() = runBlocking {
+    val alarmFlow = repository.getAlarmById("non-existent-id")
+    val alarm = alarmFlow.first()
+    assertNull(alarm)
+  }
+
+  @Test
+  fun getAlarms_returnsAllAlarms() = runBlocking {
+    val alarms = repository.getAlarms().first()
+    assertEquals(2, alarms.size)
+    assertTrue(alarms.contains(alarm1))
+    assertTrue(alarms.contains(alarm2))
+  }
 }

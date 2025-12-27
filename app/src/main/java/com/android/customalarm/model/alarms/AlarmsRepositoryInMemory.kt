@@ -3,12 +3,17 @@ package com.android.customalarm.model.alarms
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 
 /** In-memory implementation of [AlarmsRepository] */
 class AlarmsRepositoryInMemory : AlarmsRepository {
   private val _alarms = MutableStateFlow<List<Alarm>>(emptyList())
 
   override fun getAlarms(): Flow<List<Alarm>> = _alarms.asStateFlow()
+
+  override fun getAlarmById(alarmId: String): Flow<Alarm?> {
+    return _alarms.asStateFlow().map { alarms -> alarms.find { it.id == alarmId } }
+  }
 
   override suspend fun addAlarm(alarm: Alarm) {
     _alarms.value = _alarms.value + alarm

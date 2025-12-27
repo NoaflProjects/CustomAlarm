@@ -1,7 +1,10 @@
-package com.android.customalarm.model.alarms
+package com.android.customalarm.ui.alarms
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.customalarm.model.alarms.Alarm
+import com.android.customalarm.model.alarms.AlarmsRepository
+import com.android.customalarm.model.alarms.AlarmsRepositoryProvider
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -13,7 +16,9 @@ class AlarmsViewModel(
 
   // StateFlow holding the list of alarms
   val alarms: StateFlow<List<Alarm>> =
-      alarmsRepository.getAlarms().stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+      alarmsRepository
+          .getAlarms()
+          .stateIn(viewModelScope, SharingStarted.Companion.Lazily, emptyList())
 
   /** Add a new alarm */
   fun addAlarm(alarm: Alarm) = viewModelScope.launch { alarmsRepository.addAlarm(alarm) }

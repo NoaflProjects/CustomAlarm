@@ -9,6 +9,14 @@ interface AlarmsRepository {
   fun getAlarms(): Flow<List<Alarm>>
 
   /**
+   * Returns a flow of a specific alarm by its ID
+   *
+   * @param alarmId The ID of the alarm to retrieve
+   * @return A flow emitting the alarm if found, or null if not found
+   */
+  fun getAlarmById(alarmId: String): Flow<Alarm?>
+
+  /**
    * Adds a new alarm
    *
    * @param alarm The alarm to be added

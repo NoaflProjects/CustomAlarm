@@ -22,7 +22,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.customalarm.R
-import com.android.customalarm.model.alarms.AlarmsViewModel
 import com.android.customalarm.ui.theme.Dimens.paddingMedium
 import com.android.customalarm.ui.theme.Dimens.spacingSmall
 
@@ -42,7 +41,7 @@ object AlarmsScreenTestTags {
 fun AlarmsScreen(
     alarmsViewModel: AlarmsViewModel = viewModel(),
     onAddAlarm: () -> Unit = {},
-    onClickAlarm: () -> Unit = {}
+    onClickAlarm: (String) -> Unit = {}
 ) {
 
   // Collect the alarms state from the ViewModel
@@ -78,7 +77,7 @@ fun AlarmsScreen(
                       time = alarm.time,
                       isEnabled = alarm.isEnabled,
                       onToggle = { enabled -> alarmsViewModel.toggleAlarm(alarm.id, enabled) },
-                      onClick = onClickAlarm,
+                      onClick = { onClickAlarm(alarm.id) },
                       cardTestTag = AlarmsScreenTestTags.alarmCard(alarm.id),
                       switchTestTag = AlarmsScreenTestTags.alarmCardSwitch(alarm.id))
                 }

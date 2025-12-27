@@ -1,11 +1,12 @@
-package com.android.customalarm.model.alarms
+package com.android.customalarm.ui.alarms
 
 import com.android.customalarm.MainDispatcherRule
+import com.android.customalarm.model.alarms.Alarm
+import com.android.customalarm.model.alarms.AlarmsRepositoryInMemory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -31,8 +32,8 @@ class AlarmsViewModelTests {
     viewModel.addAlarm(alarm)
 
     val alarms = viewModel.alarms.first()
-    assertEquals(1, alarms.size)
-    assertEquals(alarm, alarms.first())
+    Assert.assertEquals(1, alarms.size)
+    Assert.assertEquals(alarm, alarms.first())
   }
 
   @Test
@@ -43,6 +44,6 @@ class AlarmsViewModelTests {
     viewModel.toggleAlarm("1", true)
 
     val updatedAlarm = viewModel.alarms.first().first()
-    assertTrue(updatedAlarm.isEnabled)
+    Assert.assertTrue(updatedAlarm.isEnabled)
   }
 }
