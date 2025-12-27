@@ -1,6 +1,5 @@
 package com.android.customalarm.ui.alarmsetup
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -47,7 +46,6 @@ object AlarmSetUpScreenTags {
  * @param onNavigateBack Lambda function to be called when the back button is clicked.
  * @param onSaveAlarm Lambda function to be called when the save button is clicked.
  */
-@SuppressLint("SuspiciousIndentation")
 @Composable
 fun AlarmSetUpScreen(
     alarmSetUpViewModel: AlarmSetUpViewModel = viewModel(),
