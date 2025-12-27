@@ -10,6 +10,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.customalarm.ui.alarms.AlarmsScreenTestTags
 import com.android.customalarm.ui.alarmsetup.AlarmSetUpScreenTags
 import com.android.customalarm.ui.navigation.CustomAlarmNavHost
+import com.android.customalarm.ui.navigation.Routes
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -45,7 +46,7 @@ class CustomAlarmHostTests {
     val testAlarmId = "test-id-123"
 
     // Simulate navigation directly to alarmSetup/{alarmId}
-    composeRule.setContent { TestNavHost(startDestination = "alarmSetup/$testAlarmId") }
+    composeRule.setContent { TestNavHost(startDestination = "${Routes.ALARM_SETUP}/$testAlarmId") }
 
     // Assert that the AlarmSetUpScreen is displayed with the correct test tag
     composeRule.onNodeWithTag(AlarmSetUpScreenTags.ROOT).assertExists().assertIsDisplayed()
