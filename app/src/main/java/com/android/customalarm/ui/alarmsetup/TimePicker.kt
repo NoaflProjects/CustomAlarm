@@ -29,6 +29,12 @@ private const val HOURS = 24
 private const val MINUTES = 60
 private const val REPEAT_FACTOR = 20
 
+/** Test tags for TimePicker components */
+object TimePickerTestTags {
+  const val HOUR_PICKER = "HOUR_PICKER"
+  const val MINUTE_PICKER = "MINUTE_PICKER"
+}
+
 /**
  * A composable TimePicker that allows users to select hours and minutes.
  *
