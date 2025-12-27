@@ -39,8 +39,7 @@ class AlarmSetUpScreenTests {
       AlarmSetUpScreen(
           alarmSetUpViewModel = alarmSetUpVM,
           onNavigateBack = { onNavigateBackCalled = true },
-          onSaveAlarm = { onSaveAlarmCalled = true },
-          snapToCenter = false)
+          onSaveAlarm = { onSaveAlarmCalled = true })
     }
   }
 

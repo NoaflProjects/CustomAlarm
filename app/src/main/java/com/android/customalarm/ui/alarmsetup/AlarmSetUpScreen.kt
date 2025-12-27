@@ -46,7 +46,6 @@ object AlarmSetUpScreenTags {
  * @param alarmId Optional ID of the alarm being edited; null if creating a new alarm.
  * @param onNavigateBack Lambda function to be called when the back button is clicked.
  * @param onSaveAlarm Lambda function to be called when the save button is clicked.
- * @param snapToCenter Boolean indicating whether the time picker should snap to center.
  */
 @SuppressLint("SuspiciousIndentation")
 @Composable
@@ -54,8 +53,7 @@ fun AlarmSetUpScreen(
     alarmSetUpViewModel: AlarmSetUpViewModel = viewModel(),
     alarmId: String? = null,
     onNavigateBack: () -> Unit = {},
-    onSaveAlarm: () -> Unit = {},
-    snapToCenter: Boolean = true
+    onSaveAlarm: () -> Unit = {}
 ) {
 
   // State for the selected time
