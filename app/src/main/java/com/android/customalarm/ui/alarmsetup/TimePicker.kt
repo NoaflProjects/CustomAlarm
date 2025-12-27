@@ -18,9 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.android.customalarm.ui.theme.Dimens.circularPickerWidth
 import com.android.customalarm.ui.theme.Dimens.fontSizeExtraLarge
 import com.android.customalarm.ui.theme.Dimens.fontSizeMedium
-import com.android.customalarm.ui.theme.Dimens.fontSizeSmall
 import com.android.customalarm.ui.theme.Dimens.spacingMedium
-import com.android.customalarm.ui.theme.Dimens.spacingVerySmall
 import com.android.customalarm.ui.theme.Dimens.timePickerSelectionLineHeight
 
 /** Constants for the TimePicker component */
@@ -51,8 +49,8 @@ fun TimePicker(
     selectedHour: Int,
     selectedMinute: Int,
     onTimeChanged: (hour: Int, minute: Int) -> Unit,
-    hourSelectorTestTag: String = "",
-    minuteSelectorTestTag: String = ""
+    hourSelectorTestTag: String = TimePickerTestTags.HOUR_PICKER,
+    minuteSelectorTestTag: String = TimePickerTestTags.MINUTE_PICKER
 ) {
   val visibleItems = 3 // Number of items visible at once
 
@@ -175,13 +173,5 @@ fun TimePicker(
                             .height(height = timePickerSelectionLineHeight))
               }
         }
-
-    Spacer(Modifier.height(height = spacingVerySmall))
-
-    // Display the selected time
-    Text(
-        text = "The alarm is set for %02d:%02d".format(centeredHour, centeredMinute),
-        fontSize = fontSizeSmall,
-        fontWeight = FontWeight.Normal)
   }
 }
