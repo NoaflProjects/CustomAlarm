@@ -28,7 +28,7 @@ fun CustomAlarmNavHost(startDestination: String = Routes.ALARMS) {
     }
 
     composable(
-        route = "alarmSetup/{alarmId}",
+        route = "${Routes.ALARM_SETUP}/{alarmId}",
         arguments = listOf(navArgument("alarmId") { type = NavType.StringType })) { backStackEntry
           ->
           val alarmId =
