@@ -3,9 +3,11 @@
 package com.android.customalarm.ui.alarmsetup
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -26,6 +28,7 @@ private const val ITEM_HEIGHT = 50
 private const val HOURS = 24
 private const val MINUTES = 60
 private const val REPEAT_FACTOR = 20
+private const val VISIBLE_ITEMS = 3 // Number of visible items in the picker
 
 /** Test tags for TimePicker components */
 object TimePickerTestTags {
@@ -52,56 +55,40 @@ fun TimePicker(
     hourSelectorTestTag: String = TimePickerTestTags.HOUR_PICKER,
     minuteSelectorTestTag: String = TimePickerTestTags.MINUTE_PICKER
 ) {
-  val visibleItems = 3 // Number of items visible at once
-
   // States for the hour and minute pickers
   val hourState =
       rememberLazyListState(
           initialFirstVisibleItemIndex =
-              HOURS * REPEAT_FACTOR / 2 + selectedHour - visibleItems / 2)
+              HOURS * REPEAT_FACTOR / 2 + selectedHour - VISIBLE_ITEMS / 2)
   val minuteState =
       rememberLazyListState(
           initialFirstVisibleItemIndex =
-              MINUTES * REPEAT_FACTOR / 2 + selectedMinute - visibleItems / 2)
+              MINUTES * REPEAT_FACTOR / 2 + selectedMinute - VISIBLE_ITEMS / 2)
 
-  // Snap inertia for smooth scrolling
+  // Snap fling behaviors for smooth scrolling
   val hourSnap = rememberSnapFlingBehavior(lazyListState = hourState)
   val minuteSnap = rememberSnapFlingBehavior(lazyListState = minuteState)
 
-  // Derived states to find the centered hour and minute
+  /** Utility function to get the item currently centered in the LazyColumn. */
+  fun getCenteredItem(state: LazyListState, count: Int, default: Int): Int {
+    val layoutInfo = state.layoutInfo
+    val viewportCenter = layoutInfo.viewportStartOffset + layoutInfo.viewportEndOffset / 2
+    val index =
+        layoutInfo.visibleItemsInfo
+            .minByOrNull { item ->
+              val itemCenter = item.offset + item.size / 2
+              kotlin.math.abs(n = itemCenter - viewportCenter)
+            }
+            ?.index ?: default
+    return index % count
+  }
+
+  // Derived states to track the centered hour and minute
   val centeredHour by remember {
-    derivedStateOf {
-      val layoutInfo = hourState.layoutInfo
-      val viewportCenter = layoutInfo.viewportStartOffset + layoutInfo.viewportEndOffset / 2
-
-      // Find the item closest to the center of the viewport
-      val index =
-          layoutInfo.visibleItemsInfo
-              .minByOrNull { item ->
-                val itemCenter = item.offset + item.size / 2
-                kotlin.math.abs(n = itemCenter - viewportCenter)
-              }
-              ?.index ?: selectedHour
-
-      index % HOURS
-    }
+    derivedStateOf { getCenteredItem(hourState, HOURS, default = selectedHour) }
   }
   val centeredMinute by remember {
-    derivedStateOf {
-      val layoutInfo = minuteState.layoutInfo
-      val viewportCenter = layoutInfo.viewportStartOffset + layoutInfo.viewportEndOffset / 2
-
-      // Find the item closest to the center of the viewport
-      val index =
-          layoutInfo.visibleItemsInfo
-              .minByOrNull { item ->
-                val itemCenter = item.offset + item.size / 2
-                kotlin.math.abs(n = itemCenter - viewportCenter)
-              }
-              ?.index ?: selectedMinute
-
-      index % MINUTES
-    }
+    derivedStateOf { getCenteredItem(minuteState, MINUTES, default = selectedMinute) }
   }
 
   // Call onTimeChanged whenever the centered hour or minute changes
@@ -114,67 +101,67 @@ fun TimePicker(
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically) {
-
-          // Hours selector
-          Box(
-              modifier =
-                  Modifier.width(circularPickerWidth)
-                      .height(height = (ITEM_HEIGHT * visibleItems).dp)
-                      .testTag(hourSelectorTestTag)) {
-                LazyColumn(
-                    state = hourState,
-                    flingBehavior = hourSnap,
-                    horizontalAlignment = Alignment.CenterHorizontally) {
-                      items(count = HOURS * REPEAT_FACTOR) { index ->
-                        val hour = index % HOURS
-                        val isSelected = hour == centeredHour
-                        Text(
-                            text = hour.toString().padStart(length = 2, padChar = '0'),
-                            fontSize = if (isSelected) fontSizeExtraLarge else fontSizeMedium,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth().height(height = ITEM_HEIGHT.dp))
-                      }
-                    }
-
-                // Selection line
-                Box(
-                    modifier =
-                        Modifier.align(Alignment.Center)
-                            .fillMaxWidth()
-                            .height(height = timePickerSelectionLineHeight))
-              }
-
+          // Hour selector
+          TimeSelector(
+              state = hourState,
+              snap = hourSnap,
+              count = HOURS,
+              centered = centeredHour,
+              testTag = hourSelectorTestTag)
           Spacer(Modifier.width(width = spacingMedium))
-
-          // Minutes selector
-          Box(
-              modifier =
-                  Modifier.width(width = circularPickerWidth)
-                      .height(height = (ITEM_HEIGHT * visibleItems).dp)
-                      .testTag(minuteSelectorTestTag)) {
-                LazyColumn(
-                    state = minuteState,
-                    flingBehavior = minuteSnap,
-                    horizontalAlignment = Alignment.CenterHorizontally) {
-                      items(count = MINUTES * REPEAT_FACTOR) { index ->
-                        val minute = index % MINUTES
-                        val isSelected = minute == centeredMinute
-                        Text(
-                            text = minute.toString().padStart(length = 2, padChar = '0'),
-                            fontSize = if (isSelected) fontSizeExtraLarge else fontSizeMedium,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth().height(height = ITEM_HEIGHT.dp))
-                      }
-                    }
-
-                Box(
-                    modifier =
-                        Modifier.align(Alignment.Center)
-                            .fillMaxWidth()
-                            .height(height = timePickerSelectionLineHeight))
-              }
+          // Minute selector
+          TimeSelector(
+              state = minuteState,
+              snap = minuteSnap,
+              count = MINUTES,
+              centered = centeredMinute,
+              testTag = minuteSelectorTestTag)
         }
   }
+}
+
+/**
+ * A composable representing a single time selector column (hours or minutes).
+ *
+ * @param state LazyListState for the column.
+ * @param snap FlingBehavior used for snapping.
+ * @param count Number of items (hours or minutes).
+ * @param centered Currently selected item.
+ * @param testTag Test tag for the selector.
+ */
+@Composable
+private fun TimeSelector(
+    state: LazyListState,
+    snap: FlingBehavior,
+    count: Int,
+    centered: Int,
+    testTag: String
+) {
+  Box(
+      modifier =
+          Modifier.width(circularPickerWidth)
+              .height(height = (ITEM_HEIGHT * VISIBLE_ITEMS).dp)
+              .testTag(testTag)) {
+        LazyColumn(
+            state = state,
+            flingBehavior = snap,
+            horizontalAlignment = Alignment.CenterHorizontally) {
+              items(count = count * REPEAT_FACTOR) { index ->
+                val value = index % count
+                val isSelected = value == centered
+                Text(
+                    text = value.toString().padStart(length = 2, padChar = '0'),
+                    fontSize = if (isSelected) fontSizeExtraLarge else fontSizeMedium,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth().height(ITEM_HEIGHT.dp))
+              }
+            }
+        // Selection line overlay
+        Box(
+            modifier =
+                Modifier.align(Alignment.Center)
+                    .fillMaxWidth()
+                    .height(timePickerSelectionLineHeight))
+      }
 }
