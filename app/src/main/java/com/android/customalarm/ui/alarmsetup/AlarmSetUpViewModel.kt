@@ -63,7 +63,7 @@ class AlarmSetUpViewModel(
   /** Call this to load an existing alarm for editing. */
   fun setAlarmId(alarmId: String) {
     _uiState.value = _uiState.value.copy(alarmId = alarmId)
-    // Load existing alarm details if there exist such an alarm in the repository
+    // Load existing alarm details if such an alarm exists in the repository
     viewModelScope.launch {
       val existingAlarm = alarmsRepository.getAlarmById(alarmId).firstOrNull()
       if (existingAlarm != null) {
