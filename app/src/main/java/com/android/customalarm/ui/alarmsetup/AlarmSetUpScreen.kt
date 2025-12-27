@@ -65,6 +65,7 @@ fun AlarmSetUpScreen(
   // Load the alarm if an alarmId is provided
   LaunchedEffect(alarmId) { alarmId?.let { alarmSetUpViewModel.setAlarmId(alarmId = it) } }
 
+  // Display the UI only after the alarm data is loaded or if creating a new alarm
   if (alarmId == null || isLoaded.value) {
 
     Scaffold(
