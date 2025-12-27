@@ -3,8 +3,10 @@ package com.android.customalarm.ui.alarmsetup
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -16,10 +18,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.customalarm.R
 import com.android.customalarm.ui.common.TopBar
+import com.android.customalarm.ui.theme.Dimens.fontSizeSmall
 import com.android.customalarm.ui.theme.Dimens.paddingMedium
+import com.android.customalarm.ui.theme.Dimens.spacingVerySmall
 
 /** Test tags for AlarmSetUpScreen components */
 object AlarmSetUpScreenTags {
@@ -30,6 +35,7 @@ object AlarmSetUpScreenTags {
   const val TIME_PICKER = "alarm_setup_screen_time_picker"
   const val HOUR_PICKER = "alarm_setup_screen_hour_picker"
   const val MINUTE_PICKER = "alarm_setup_screen_minute_picker"
+  const val SELECTED_TIME_TEXT = "alarm_setup_screen_selected_time_text"
   const val ALARM_NAME_FIELD = "alarm_setup_screen_alarm_name_field"
 }
 
@@ -85,7 +91,22 @@ fun AlarmSetUpScreen(
                   selectedMinute = uiState.value.selectedMinute,
                   onTimeChanged = { hour, minute ->
                     alarmSetUpViewModel.onTimeChanged(hour, minute)
-                  })
+                  },
+                  hourSelectorTestTag = AlarmSetUpScreenTags.HOUR_PICKER,
+                  minuteSelectorTestTag = AlarmSetUpScreenTags.MINUTE_PICKER)
+
+              Spacer(Modifier.height(height = spacingVerySmall))
+
+              // Display the selected time
+              Text(
+                  text =
+                      "The alarm is set for %02d:%02d"
+                          .format(uiState.value.selectedHour, uiState.value.selectedMinute),
+                  fontSize = fontSizeSmall,
+                  fontWeight = FontWeight.Normal,
+                  modifier = Modifier.testTag(tag = AlarmSetUpScreenTags.SELECTED_TIME_TEXT))
+
+              Spacer(Modifier.height(height = spacingVerySmall))
 
               // Alarm name input
               OutlinedTextField(
