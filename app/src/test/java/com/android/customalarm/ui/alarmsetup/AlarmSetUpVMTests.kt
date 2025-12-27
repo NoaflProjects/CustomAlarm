@@ -28,11 +28,15 @@ class AlarmSetUpVMTests {
   }
 
   @Test
-  fun `initial state is correct`() = runTest {
+  fun `initial state is current time`() = runTest {
     val state = viewModel.uiState.first()
 
-    assertEquals(AlarmSetUpDefaults.DEFAULT_HOUR, state.selectedHour)
-    assertEquals(AlarmSetUpDefaults.DEFAULT_MINUTE, state.selectedMinute)
+    val now = java.util.Calendar.getInstance()
+    val currentHour = now.get(java.util.Calendar.HOUR_OF_DAY)
+    val currentMinute = now.get(java.util.Calendar.MINUTE)
+
+    assertEquals(currentHour, state.selectedHour)
+    assertEquals(currentMinute, state.selectedMinute)
     assertEquals(AlarmSetUpDefaults.DEFAULT_ALARM_NAME, state.alarmName)
   }
 
