@@ -49,11 +49,10 @@ fun TopBar(
               text = leftText,
               style = MaterialTheme.typography.bodySmall,
               modifier =
-                  Modifier.align(Alignment.CenterStart)
-                      .clickable(onClick = onLeftClick)
-                      .then(
-                          if (leftTestTag.isNotEmpty()) Modifier.testTag(leftTestTag)
-                          else Modifier))
+                  Modifier.then(
+                          if (leftTestTag.isNotEmpty()) Modifier.testTag(leftTestTag) else Modifier)
+                      .align(Alignment.CenterStart)
+                      .clickable(onClick = onLeftClick))
         }
 
         if (middleText.isNotEmpty()) {
