@@ -53,8 +53,8 @@ class AlarmSetUpViewModel(
       val now = java.util.Calendar.getInstance()
       _uiState.value =
           _uiState.value.copy(
-              selectedHour = now.get(java.util.Calendar.HOUR_OF_DAY),
-              selectedMinute = now.get(java.util.Calendar.MINUTE))
+              selectedHour = now[java.util.Calendar.HOUR_OF_DAY],
+              selectedMinute = now[java.util.Calendar.MINUTE])
     }
   }
 
