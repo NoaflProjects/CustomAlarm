@@ -48,16 +48,19 @@ class AlarmSetUpViewModel(
   private val _isLoaded = MutableStateFlow(false)
   val isLoaded: StateFlow<Boolean> = _isLoaded
 
-  init {
-    if (_uiState.value.alarmId.isEmpty()) {
-      val now = java.util.Calendar.getInstance()
-      _uiState.value =
-          _uiState.value.copy(
-              selectedHour = now[java.util.Calendar.HOUR_OF_DAY],
-              selectedMinute = now[java.util.Calendar.MINUTE])
-    }
+  /**
+   * Use this function when creating a new alarm. Initializes the UI state with the current time.
+   */
+  fun createNewAlarm() {
+    val now = java.util.Calendar.getInstance()
+    _uiState.value =
+        _uiState.value.copy(
+            selectedHour = now[java.util.Calendar.HOUR_OF_DAY],
+            selectedMinute = now[java.util.Calendar.MINUTE])
+    _isLoaded.value = true
   }
 
+  /** Call this to load an existing alarm for editing. */
   fun setAlarmId(alarmId: String) {
     _uiState.value = _uiState.value.copy(alarmId = alarmId)
     // Load existing alarm details if there exist such an alarm in the repository

@@ -62,12 +62,17 @@ fun AlarmSetUpScreen(
   // State to track if the alarm data is loaded
   val isLoaded = alarmSetUpViewModel.isLoaded.collectAsState()
 
-  // Load the alarm if an alarmId is provided
-  LaunchedEffect(alarmId) { alarmId?.let { alarmSetUpViewModel.setAlarmId(alarmId = it) } }
+  // Load the alarm or initialize a new one
+  LaunchedEffect(alarmId) {
+    if (alarmId != null) {
+      alarmSetUpViewModel.setAlarmId(alarmId)
+    } else {
+      alarmSetUpViewModel.createNewAlarm()
+    }
+  }
 
-  // Display the UI only after the alarm data is loaded or if creating a new alarm
-  if (alarmId == null || isLoaded.value) {
-
+  // Display the UI only after the alarm data is loaded
+  if (isLoaded.value) {
     Scaffold(
         modifier = Modifier.testTag(tag = AlarmSetUpScreenTags.ROOT),
         topBar = {
