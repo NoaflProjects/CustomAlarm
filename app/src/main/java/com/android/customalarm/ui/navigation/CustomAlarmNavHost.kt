@@ -31,7 +31,12 @@ fun CustomAlarmNavHost() {
         route = "alarmSetup/{alarmId}",
         arguments = listOf(navArgument("alarmId") { type = NavType.StringType })) { backStackEntry
           ->
-          val alarmId = backStackEntry.arguments?.getString("alarmId")!!
+          val alarmId =
+              backStackEntry.arguments?.getString("alarmId")
+                  ?: run {
+                    navController.popBackStack()
+                    return@composable
+                  }
           AlarmSetUpScreen(
               alarmId = alarmId,
               onNavigateBack = { navController.popBackStack() },
