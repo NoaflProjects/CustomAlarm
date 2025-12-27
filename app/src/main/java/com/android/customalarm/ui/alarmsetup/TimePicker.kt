@@ -77,7 +77,7 @@ fun TimePicker(
         layoutInfo.visibleItemsInfo
             .minByOrNull { item ->
               val itemCenter = item.offset + item.size / 2
-              kotlin.math.abs(n = itemCenter - viewportCenter)
+              kotlin.math.abs(itemCenter - viewportCenter)
             }
             ?.index ?: default
     return index % count
