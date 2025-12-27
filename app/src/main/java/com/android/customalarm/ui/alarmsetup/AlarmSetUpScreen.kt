@@ -109,8 +109,10 @@ fun AlarmSetUpScreen(
                 // Display the selected time
                 Text(
                     text =
-                        "The alarm is set for %02d:%02d"
-                            .format(uiState.value.selectedHour, uiState.value.selectedMinute),
+                        stringResource(
+                            id = R.string.alarm_set_for_time,
+                            uiState.value.selectedHour,
+                            uiState.value.selectedMinute),
                     fontSize = fontSizeSmall,
                     fontWeight = FontWeight.Normal,
                     modifier = Modifier.testTag(tag = AlarmSetUpScreenTags.SELECTED_TIME_TEXT))
