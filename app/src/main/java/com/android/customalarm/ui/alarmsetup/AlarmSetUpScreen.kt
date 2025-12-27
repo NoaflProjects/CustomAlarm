@@ -1,5 +1,6 @@
 package com.android.customalarm.ui.alarmsetup
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +10,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,13 +37,16 @@ object AlarmSetUpScreenTags {
  * Composable function for the Alarm Setup Screen.
  *
  * @param alarmSetUpViewModel ViewModel managing the state and logic for the Alarm Setup screen.
+ * @param alarmId Optional ID of the alarm being edited; null if creating a new alarm.
  * @param onNavigateBack Lambda function to be called when the back button is clicked.
  * @param onSaveAlarm Lambda function to be called when the save button is clicked.
  * @param snapToCenter Boolean indicating whether the time picker should snap to center.
  */
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun AlarmSetUpScreen(
     alarmSetUpViewModel: AlarmSetUpViewModel = viewModel(),
+    alarmId: String? = null,
     onNavigateBack: () -> Unit = {},
     onSaveAlarm: () -> Unit = {},
     snapToCenter: Boolean = true
@@ -49,6 +54,9 @@ fun AlarmSetUpScreen(
 
   // State for the selected time
   val uiState = alarmSetUpViewModel.uiState.collectAsState()
+
+  // Load the alarm if an alarmId is provided
+  LaunchedEffect(alarmId) { alarmId?.let { alarmSetUpViewModel.setAlarmId(alarmId = it) } }
 
   Scaffold(
       modifier = Modifier.testTag(tag = AlarmSetUpScreenTags.ROOT),
@@ -73,12 +81,11 @@ fun AlarmSetUpScreen(
               // Time picker
               TimePicker(
                   modifier = Modifier.testTag(tag = AlarmSetUpScreenTags.TIME_PICKER),
-                  initialHour = uiState.value.selectedHour,
-                  initialMinute = uiState.value.selectedMinute,
-                  hourSelectorTestTag = AlarmSetUpScreenTags.HOUR_PICKER,
-                  minuteSelectorTestTag = AlarmSetUpScreenTags.MINUTE_PICKER,
-                  onTimeChanged = alarmSetUpViewModel::onTimeChanged,
-                  snapToCenter = snapToCenter)
+                  selectedHour = uiState.value.selectedHour,
+                  selectedMinute = uiState.value.selectedMinute,
+                  onTimeChanged = { hour, minute ->
+                    alarmSetUpViewModel.onTimeChanged(hour, minute)
+                  })
 
               // Alarm name input
               OutlinedTextField(
