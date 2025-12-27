@@ -1,17 +1,21 @@
 package com.android.ui.alarmsetup
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.customalarm.model.alarms.Alarm
 import com.android.customalarm.model.alarms.AlarmsRepository
 import com.android.customalarm.model.alarms.AlarmsRepositoryInMemory
 import com.android.customalarm.ui.alarmsetup.AlarmSetUpScreen
 import com.android.customalarm.ui.alarmsetup.AlarmSetUpScreenTags
 import com.android.customalarm.ui.alarmsetup.AlarmSetUpViewModel
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -95,5 +99,37 @@ class AlarmSetUpScreenTests {
     composeRule.onNodeWithTag(AlarmSetUpScreenTags.RIGHT_TOPBAR_BUTTON).performClick()
 
     assertTrue(onSaveAlarmCalled)
+  }
+}
+
+@RunWith(AndroidJUnit4::class)
+class AlarmSetUpScreenWithExistingAlarmTests {
+
+  @get:Rule val composeRule = createComposeRule()
+
+  private lateinit var alarmsRepository: AlarmsRepository
+
+  @Test
+  fun alarmSetupScreen_displaysExistingAlarmNameAndTime() = runTest {
+    // Add an existing alarm to the repository
+    alarmsRepository = AlarmsRepositoryInMemory()
+    val existingAlarm = Alarm(id = "alarm1", name = "Evening Alarm", time = "21:45")
+    alarmsRepository.addAlarm(existingAlarm)
+
+    val viewModel = AlarmSetUpViewModel(alarmsRepository)
+
+    composeRule.setContent { AlarmSetUpScreen(alarmSetUpViewModel = viewModel, alarmId = "alarm1") }
+
+    composeRule.waitForIdle()
+
+    // Check that the name is displayed correctly
+    composeRule
+        .onNodeWithTag(AlarmSetUpScreenTags.ALARM_NAME_FIELD)
+        .assertIsDisplayed()
+        .assertTextEquals("Evening Alarm")
+
+    // Check that the time is displayed correctly
+    composeRule.onNodeWithText("21").assertIsDisplayed()
+    composeRule.onNodeWithText("45").assertIsDisplayed()
   }
 }
