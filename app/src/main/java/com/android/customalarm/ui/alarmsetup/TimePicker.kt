@@ -56,10 +56,13 @@ fun TimePicker(
 
   // States for the hour and minute pickers
   val hourState =
-      rememberLazyListState(initialFirstVisibleItemIndex = HOURS * REPEAT_FACTOR / 2 + selectedHour)
+      rememberLazyListState(
+          initialFirstVisibleItemIndex =
+              HOURS * REPEAT_FACTOR / 2 + selectedHour - visibleItems / 2)
   val minuteState =
       rememberLazyListState(
-          initialFirstVisibleItemIndex = MINUTES * REPEAT_FACTOR / 2 + selectedMinute)
+          initialFirstVisibleItemIndex =
+              MINUTES * REPEAT_FACTOR / 2 + selectedMinute - visibleItems / 2)
 
   // Snap inertia for smooth scrolling
   val hourSnap = rememberSnapFlingBehavior(lazyListState = hourState)
