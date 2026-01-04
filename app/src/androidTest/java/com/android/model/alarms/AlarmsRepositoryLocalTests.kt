@@ -1,15 +1,21 @@
-package com.android.ui.alarms
+package com.android.model.alarms
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.customalarm.model.alarms.*
+import com.android.customalarm.model.alarms.Alarm
+import com.android.customalarm.model.alarms.AlarmEntity
+import com.android.customalarm.model.alarms.AlarmsRepositoryLocal
+import com.android.customalarm.model.alarms.MyObjectBox
 import io.objectbox.Box
 import io.objectbox.BoxStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import org.junit.*
+import org.junit.After
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
