@@ -1,6 +1,7 @@
 package com.android.customalarm
 
 import android.app.Application
+import com.android.customalarm.model.alarms.AlarmsRepositoryProvider
 import com.android.customalarm.model.objectbox.BoxProvider
 
 class MainApplication : Application() {
@@ -10,5 +11,8 @@ class MainApplication : Application() {
 
     // Initialize Box database for local data storage
     BoxProvider.init(this)
+
+    // Initialize AlarmsRepository
+    AlarmsRepositoryProvider.initDefault()
   }
 }
