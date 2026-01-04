@@ -115,4 +115,15 @@ class AlarmsRepositoryLocalTests {
   fun requireAlarmExists_nonExisting_throws() = runTest {
     repository.requireAlarmExists("does-not-exist")
   }
+
+  @Test(expected = IllegalArgumentException::class)
+  fun addAlarm_existingAlarm_throwsException() = runTest {
+    val alarm = Alarm(name = "Duplicate Alarm", time = "10:00")
+
+    // Add the alarm for the first time
+    repository.addAlarm(alarm)
+
+    // Add the same alarm again to trigger exception
+    repository.addAlarm(alarm)
+  }
 }

@@ -16,6 +16,11 @@ class AlarmsRepositoryInMemory : AlarmsRepository {
   }
 
   override suspend fun addAlarm(alarm: Alarm) {
+    // Check for duplicate alarm ID
+    require(_alarms.value.none { it.id == alarm.id }) {
+      "Alarm with ID ${alarm.id} already exists."
+    }
+
     _alarms.value = _alarms.value + alarm
   }
 

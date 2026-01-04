@@ -32,6 +32,10 @@ class AlarmsRepositoryLocal(private val alarmBox: Box<AlarmEntity> = BoxProvider
           .flowOn(Dispatchers.IO)
 
   override suspend fun addAlarm(alarm: Alarm) {
+    // Check for duplicate alarm ID
+    val exists = alarmBox.all.any { it.alarmId == alarm.id }
+    require(!exists) { "Alarm with ID ${alarm.id} already exists." }
+
     alarmBox.put(alarm.toEntity())
   }
 
