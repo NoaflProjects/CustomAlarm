@@ -17,6 +17,10 @@ object AlarmsRepositoryProvider {
 
   /** Initialize with real repository (in Application) */
   fun initDefault() {
+    if (_repository != null) {
+      // Already initialized; avoid re-initialization.
+      return
+    }
     _repository = AlarmsRepositoryLocal()
   }
 }
