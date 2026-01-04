@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.ktfmt)
     alias(libs.plugins.sonar)
     id("jacoco")
+    id("io.objectbox") // ObjectBox plugin
 }
 
 android {

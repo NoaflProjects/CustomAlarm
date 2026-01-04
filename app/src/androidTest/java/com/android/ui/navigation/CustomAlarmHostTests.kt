@@ -7,10 +7,13 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.navigation.compose.rememberNavController
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.customalarm.model.alarms.AlarmsRepositoryInMemory
+import com.android.customalarm.model.alarms.AlarmsRepositoryProvider
 import com.android.customalarm.ui.alarms.AlarmsScreenTestTags
 import com.android.customalarm.ui.alarmsetup.AlarmSetUpScreenTags
 import com.android.customalarm.ui.navigation.CustomAlarmNavHost
 import com.android.customalarm.ui.navigation.Routes
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,6 +23,12 @@ import org.junit.runner.RunWith
 class CustomAlarmHostTests {
 
   @get:Rule val composeRule = createComposeRule()
+
+  @Before
+  fun setup() {
+    // Use in-memory repository for testing
+    AlarmsRepositoryProvider.repository = AlarmsRepositoryInMemory()
+  }
 
   @Test
   fun navHost_startsAtAlarmsScreen() {

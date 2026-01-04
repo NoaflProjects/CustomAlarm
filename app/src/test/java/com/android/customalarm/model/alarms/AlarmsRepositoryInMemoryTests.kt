@@ -105,4 +105,15 @@ class AlarmsRepositoryInMemoryTests {
     assertTrue(alarms.contains(alarm1))
     assertTrue(alarms.contains(alarm2))
   }
+
+  @Test
+  fun addAlarm_throwsIfAlarmAlreadyExists() = runBlocking {
+    val duplicateAlarm = Alarm(id = "1", time = "07:00")
+    try {
+      repository.addAlarm(duplicateAlarm)
+      fail("Expected IllegalArgumentException to be thrown")
+    } catch (e: IllegalArgumentException) {
+      assertTrue(e.message!!.contains("already exists"))
+    }
+  }
 }
