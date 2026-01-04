@@ -1,5 +1,6 @@
 package com.android.customalarm.model.alarms
 
+import com.android.customalarm.model.objectbox.BoxProvider
 import io.objectbox.Box
 import io.objectbox.kotlin.flow
 import kotlinx.coroutines.Dispatchers
@@ -9,7 +10,8 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 /** Local implementation of [AlarmsRepository] using ObjectBox for storage */
-class AlarmsRepositoryLocal(private val alarmBox: Box<AlarmEntity>) : AlarmsRepository {
+class AlarmsRepositoryLocal(private val alarmBox: Box<AlarmEntity> = BoxProvider.alarmBox()) :
+    AlarmsRepository {
 
   @OptIn(ExperimentalCoroutinesApi::class)
   override fun getAlarms(): Flow<List<Alarm>> =
