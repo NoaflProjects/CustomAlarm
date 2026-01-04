@@ -39,9 +39,6 @@ class BoxProviderTests {
     // Manual cleanup to ensure uninitialized state
     BoxProvider.closeStore()
 
-    try {
-      BoxProvider.alarmBox()
-      fail("Expected IllegalStateException")
-    } catch (_: IllegalStateException) {}
+    assertThrows(IllegalStateException::class.java) { BoxProvider.alarmBox() }
   }
 }
