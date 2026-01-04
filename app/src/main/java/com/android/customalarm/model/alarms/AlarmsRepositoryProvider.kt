@@ -15,7 +15,13 @@ object AlarmsRepositoryProvider {
       _repository = value
     }
 
-  /** Initialize with real repository (in Application) */
+  /**
+   * Initializes this provider with the default production [AlarmsRepository] implementation.
+   *
+   * This method is intended to be called exactly once from the application's
+   * [android.app.Application.onCreate] method. Tests should instead configure the repository by
+   * assigning to [repository] directly.
+   */
   fun initDefault() {
     if (_repository != null) {
       // Already initialized; avoid re-initialization.
