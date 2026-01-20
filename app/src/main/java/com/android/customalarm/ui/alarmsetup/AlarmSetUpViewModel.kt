@@ -105,4 +105,12 @@ class AlarmSetUpViewModel(
       }
     }
   }
+
+  // Delete the alarm from the repository
+  fun deleteAlarm() {
+    viewModelScope.launch {
+      val alarmId = _uiState.value.alarmId
+      alarmsRepository.removeAlarm(alarmId = alarmId)
+    }
+  }
 }

@@ -7,6 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -128,6 +133,24 @@ fun AlarmSetUpScreen(
                         Modifier.fillMaxWidth()
                             .padding(all = paddingMedium)
                             .testTag(tag = AlarmSetUpScreenTags.ALARM_NAME_FIELD))
+
+                // Delete button for existing alarms only
+                if (alarmId != null) {
+                  Spacer(Modifier.height(height = spacingVerySmall))
+
+                  // Delete button
+                  Button(
+                      onClick = {
+                        alarmSetUpViewModel.deleteAlarm()
+                        onNavigateBack()
+                      }) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = stringResource(id = R.string.delete))
+                        Spacer(modifier = Modifier.width(width = spacingVerySmall))
+                        Text(text = stringResource(id = R.string.delete))
+                      }
+                }
               }
         }
   }
