@@ -100,6 +100,13 @@ class AlarmSetUpScreenTests {
 
     assertTrue(onSaveAlarmCalled)
   }
+
+  @Test
+  fun deleteButton_isNotDisplayed_whenCreatingNewAlarm() {
+    // At first, no alarm exists, so we are creating a new one
+    // Thus the delete button should not be displayed
+    composeRule.onNodeWithTag(AlarmSetUpScreenTags.DELETE_BUTTON).assertDoesNotExist()
+  }
 }
 
 @RunWith(AndroidJUnit4::class)
@@ -131,5 +138,58 @@ class AlarmSetUpScreenWithExistingAlarmTests {
     // Check that the time is displayed correctly
     composeRule.onNodeWithText("21").assertIsDisplayed()
     composeRule.onNodeWithText("45").assertIsDisplayed()
+  }
+
+  @Test
+  fun deleteButton_isDisplayed_whenEditingExistingAlarm() = runTest {
+    // Add an existing alarm to the repository
+    val alarmsRepository = AlarmsRepositoryInMemory()
+    val existingAlarm = Alarm(id = "alarm1", name = "Evening Alarm", time = "21:45")
+    alarmsRepository.addAlarm(existingAlarm)
+
+    // Now set up the screen to edit this existing alarm
+    val viewModel = AlarmSetUpViewModel(alarmsRepository)
+
+    // Set content with existing alarm ID
+    composeRule.setContent { AlarmSetUpScreen(alarmSetUpViewModel = viewModel, alarmId = "alarm1") }
+
+    composeRule.waitForIdle()
+
+    // Verify that the delete button is displayed
+    composeRule.onNodeWithTag(AlarmSetUpScreenTags.DELETE_BUTTON).assertIsDisplayed()
+  }
+
+  @Test
+  fun clickingDeleteButton_removesAlarmAndNavigatesBack() = runTest {
+    // Add an existing alarm to the repository
+    val alarmsRepository = AlarmsRepositoryInMemory()
+    val existingAlarm = Alarm(id = "alarm1", name = "Evening Alarm", time = "21:45")
+    alarmsRepository.addAlarm(existingAlarm)
+
+    // Now set up the screen to edit this existing alarm
+    var onNavigateBackCalled = false
+    val viewModel = AlarmSetUpViewModel(alarmsRepository)
+
+    // Set content with existing alarm ID
+    composeRule.setContent {
+      AlarmSetUpScreen(
+          alarmSetUpViewModel = viewModel,
+          alarmId = "alarm1",
+          onNavigateBack = { onNavigateBackCalled = true })
+    }
+
+    composeRule.waitForIdle()
+
+    // Click delete
+    composeRule.onNodeWithTag(AlarmSetUpScreenTags.DELETE_BUTTON).performClick()
+
+    composeRule.waitForIdle()
+
+    // Repository is empty
+    val alarms = alarmsRepository.getAlarms().first()
+    assertEquals(0, alarms.size)
+
+    // Navigation back was triggered
+    assertTrue(onNavigateBackCalled)
   }
 }

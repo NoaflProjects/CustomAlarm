@@ -41,6 +41,7 @@ object AlarmSetUpScreenTags {
   const val MINUTE_PICKER = "alarm_setup_screen_minute_picker"
   const val SELECTED_TIME_TEXT = "alarm_setup_screen_selected_time_text"
   const val ALARM_NAME_FIELD = "alarm_setup_screen_alarm_name_field"
+  const val DELETE_BUTTON = "alarm_setup_screen_delete_button"
 }
 
 /**
@@ -140,6 +141,7 @@ fun AlarmSetUpScreen(
 
                   // Delete button
                   Button(
+                      modifier = Modifier.testTag(tag = AlarmSetUpScreenTags.DELETE_BUTTON),
                       onClick = {
                         alarmSetUpViewModel.deleteAlarm()
                         onNavigateBack()
