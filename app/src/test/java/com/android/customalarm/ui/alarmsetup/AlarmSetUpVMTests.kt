@@ -114,4 +114,40 @@ class AlarmSetUpVMTests {
     assertEquals(45, state.selectedMinute)
     assertEquals("Existing alarm", state.alarmName)
   }
+
+  @Test
+  fun `deleteAlarm removes existing alarm`() = runTest {
+    // Add an existing alarm to the repository
+    val alarm = Alarm(name = "Alarm to delete", time = "08:00")
+    repository.addAlarm(alarm)
+
+    val alarmId = repository.getAlarms().first().first().id
+
+    // Set the alarm ID in the ViewModel so it knows which alarm to delete
+    viewModel.setAlarmId(alarmId)
+    advanceUntilIdle()
+
+    // Call deleteAlarm
+    viewModel.deleteAlarm()
+    advanceUntilIdle()
+
+    // Verify that the alarm was removed from the repository
+    val alarms = repository.getAlarms().first()
+    assertEquals(0, alarms.size)
+  }
+
+  @Test
+  fun `deleteAlarm with empty alarmId does nothing`() = runTest {
+    // Create a new alarm (alarmId is empty by default)
+    viewModel.createNewAlarm()
+    advanceUntilIdle()
+
+    // Attempt to delete; should not remove anything
+    viewModel.deleteAlarm()
+    advanceUntilIdle()
+
+    // Verify that the repository is still empty
+    val alarms = repository.getAlarms().first()
+    assertEquals(0, alarms.size)
+  }
 }
