@@ -4,6 +4,7 @@
     <!-- Common strings -->
     <string name="back">Back</string>
     <string name="save">Save</string>
+    <string name="delete">Delete</string>
 
     <!-- Alarms screen -->
     <string name="alarms_title">Alarms</string>
